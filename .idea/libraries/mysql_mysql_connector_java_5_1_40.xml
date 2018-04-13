@@ -3,8 +3,13 @@
     <properties maven-id="mysql:mysql-connector-java:5.1.40" />
     <CLASSES>
       <root url="jar://$MAVEN_REPOSITORY$/mysql/mysql-connector-java/5.1.40/mysql-connector-java-5.1.40.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jsoup-1.11.2.jar!/" />
     </CLASSES>
-    <JAVADOC />
-    <SOURCES />
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/lib/jsoup-1.11.2-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/lib/jsoup-1.11.2-sources.jar!/" />
+    </SOURCES>
   </library>
 </component>

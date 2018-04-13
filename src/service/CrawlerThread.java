@@ -36,25 +36,26 @@ public class CrawlerThread extends Thread {
         VnexpressReaderModel vnexpressReaderModel = new VnexpressReaderModel();
         Document doc = null;
         try {
-            doc = Jsoup.connect(this.url).get();
+            doc = Jsoup.connect("http://cafebiz.vn/" + this.url).get();
         } catch (IOException e) {
             e.printStackTrace();
         }
         Elements element = doc.select("h1");
         articles.setTitle(element.text());
         articles.setLink(this.url);
-        element = doc.select(".list_title a:first-child");
+        element = doc.select(".tinlienquan a.visit-popup");
         for (Element el : element) {
             articles1.setLink(el.attr("href"));
             try {
-                doc = Jsoup.connect(articles1.getLink()).get();
+                doc = Jsoup.connect("http://cafebiz.vn/" + articles1.getLink()).get();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            element = doc.select("h1");
+            element = doc.select("h1.title");
             articles1.setTitle(element.text());
-//            vnexpressReaderModel.insertIntoDb(articles1);
+            vnexpressReaderModel.insertIntoDb(articles1);
 //            hashSet.add(articles1);
         }
+        vnexpressReaderModel.insertIntoDb(articles);
     }
 }

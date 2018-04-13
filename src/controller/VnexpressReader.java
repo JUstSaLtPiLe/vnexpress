@@ -1,5 +1,6 @@
 package controller;
 
+import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import entity.Articles;
 import model.VnexpressReaderModel;
 import org.jsoup.Jsoup;
@@ -25,19 +26,18 @@ public class VnexpressReader implements Reader {
     public void getIndexArticles(){
         Document doc = null;
         try {
-            doc = Jsoup.connect("https://vnexpress.net/").get();
+            doc = Jsoup.connect("http://cafebiz.vn/").get();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Elements element = doc.select(".list_news .title_news a:first-child");
+        Elements element = doc.select("h3 a");
         for (int i = 0; i < element.size(); i++){
             Element el = element.get(i);
             Articles articles = new Articles();
             articles.setLink(el.attr("href"));
             articles.setTitle(el.text());
             listArticles.add(articles);
-//            articles.setLink(el.attr("href"));
-//            System.out.println(i + 1 + ". " + articles.getTitle());
+//            System.out.println(i + 1 + ". " + articles.getLink());
         }
 
 //        System.out.println("Choose artile you want to read: ");
@@ -56,27 +56,30 @@ public class VnexpressReader implements Reader {
 //        }
     }
 
-    public static void main(String[] args) throws InterruptedException, ExecutionException, IOException, TimeoutException {
+    public static void main(String[] args) throws IOException {
         int dem = 0;
         VnexpressReader vnexpressReader = new VnexpressReader();
         vnexpressReader.getIndexArticles();
-        ExecutorService executorService = Executors.newFixedThreadPool(10);
-        VnexpressReaderModel vnexpressReaderModel = new VnexpressReaderModel();
-        HashSet<Future<HashSet<Articles>>> hashSet = new HashSet<Future<HashSet<Articles>>>();
-        HashSet<Articles> hashSet1 = new HashSet<Articles>();
-        for (int i = 0; i < listArticles.size(); i++){
-//            CrawlerThread crawlerThread = new CrawlerThread(listArticles.get(i).getLink());
-//            crawlerThread.start();
-            CrawlerThread2 crawlerThread2 = new CrawlerThread2(listArticles.get(i).getLink());
-            hashSet.add(executorService.submit(crawlerThread2));
+//        ExecutorService executorService = Executors.newFixedThreadPool(listArticles.size());
+//        VnexpressReaderModel vnexpressReaderModel = new VnexpressReaderModel();
+//        HashSet<Future<HashSet<Articles>>> hashSet = new HashSet<Future<HashSet<Articles>>>();
+//        HashSet<Articles> hashSet1 = new HashSet<Articles>();
+        for (int i = 0; i < listArticles.size(); i++) {
+            CrawlerThread crawlerThread = new CrawlerThread(listArticles.get(i).getLink());
+            crawlerThread.start();
+//            CrawlerThread2 crawlerThread2 = new CrawlerThread2(listArticles.get(i).getLink());
+//            hashSet.add(executorService.submit(crawlerThread2));
+//        }
+//        for (Future<HashSet<Articles>> f: hashSet){
+//            for (Articles articles: f.get()){
+////                vnexpressReaderModel.insertIntoDb(articles);
+//                System.out.println(articles.getTitle());
+//            }
+//        }
+//        executorService.shutdown();
         }
-        for (Future<HashSet<Articles>> f: hashSet){
-            for (Articles articles: f.get()){
-                vnexpressReaderModel.insertIntoDb(articles);
-            }
-        }
-        executorService.shutdown();
     }
+
     @Override
     public String getListCategories(){
         return "Categories";
